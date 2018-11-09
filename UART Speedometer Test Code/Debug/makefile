@@ -8,11 +8,11 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./boatyMcBoatface.obj" \
 "./main.obj" \
 "./startup_msp432p401r_ccs.obj" \
 "./system_msp432p401r.obj" \
-"../msp432p401r.cmd" \
+"../driverlib_empty_project_ccs.cmd" \
+"/Applications/ti/msp/MSP432Ware_3_50_00_02/driverlib/driverlib/MSP432P4xx/ccs/msp432p4xx_driverlib.lib" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 
@@ -121,43 +121,49 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Final\ Project.out \
+UART\ Speedometer\ Test\ Code.out \
 
 EXE_OUTPUTS__QUOTED += \
-"Final Project.out" \
+"UART Speedometer Test Code.out" \
 
 BIN_OUTPUTS += \
-Final\ Project.hex \
+UART\ Speedometer\ Test\ Code.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"Final Project.hex" \
+"UART Speedometer Test Code.bin" \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "Final Project.out"
+all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
+	@$(MAKE) --no-print-directory -Onone "UART Speedometer Test Code.out"
 
 # Tool invocations
-Final\ Project.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+UART\ Speedometer\ Test\ Code.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --advice:power=all --define=__MSP432P401R__ --define=ccs -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"Final Project.map" --heap_size=1024 --stack_size=512 -i"/Applications/ti/ccsv8/ccs_base/arm/include" -i"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/lib" -i"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Final Project_linkInfo.xml" --rom_model -o "Final Project.out" $(ORDERED_OBJS)
+	"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --advice:power=all --define=__MSP432P401R__ --define=TARGET_IS_MSP432P4XX --define=ccs -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number -z -m"UART Speedometer Test Code.map" --stack_size=512 -i"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/lib" -i"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="UART Speedometer Test Code_linkInfo.xml" --rom_model -o "UART Speedometer Test Code.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
+	@$(MAKE) --no-print-directory post-build
 
-Final\ Project.hex: $(EXE_OUTPUTS)
+UART\ Speedometer\ Test\ Code.bin: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armhex" --memwidth=8 --romwidth=8 -o "Final Project.hex" $(EXE_OUTPUTS__QUOTED)
+	"/Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armhex"  -o "UART Speedometer Test Code.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
+	@$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "boatyMcBoatface.obj" "main.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" 
-	-$(RM) "boatyMcBoatface.d" "main.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" 
+	-$(RM) "main.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" 
+	-$(RM) "main.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" 
 	-@echo 'Finished clean'
+	-@echo ' '
+
+post-build:
+	-/Applications/ti/ccsv8/utils/tiobj2bin/tiobj2bin UART Speedometer Test Code.out UART Speedometer Test Code.bin /Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armofd /Applications/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armhex /Applications/ti/ccsv8/utils/tiobj2bin/mkhex4bin
 	-@echo ' '
 
 .PHONY: all clean dependents
